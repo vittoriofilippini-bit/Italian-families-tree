@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Benetton Family Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #faf9f7;
+  --surface: #ffffff;
+  --surface2: #f3f1ed;
+  --border: rgba(0,0,0,0.10);
+  --border2: rgba(0,0,0,0.18);
+  --text: #1a1916;
+  --text2: #5f5e5a;
+  --text3: #9b9990;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --font: 'DM Sans', system-ui, sans-serif;
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --gap: 14px;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 0;
+}
+
+.page-wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem 4rem;
+}
+
+/* Header */
+.db-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 0.5px solid var(--border2);
+}
+.db-header-left h1 {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+.db-header-left p {
+  font-size: 13px;
+  color: var(--text2);
+  margin-top: 4px;
+}
+.header-badge {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: #EAF3DE;
+  color: #27500A;
+  font-weight: 500;
+}
+
+/* Metrics */
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--gap);
+  margin-bottom: var(--gap);
+}
+@media (max-width: 640px) { .metrics { grid-template-columns: repeat(2, 1fr); } }
+.metric {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.125rem;
+}
+.metric .m-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+.metric .m-value { font-size: 28px; font-weight: 500; color: var(--text); line-height: 1; }
+.metric .m-sub { font-size: 11px; color: var(--text2); margin-top: 4px; }
+
+/* Two-col layout */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap);
+  margin-bottom: var(--gap);
+}
+@media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+/* Card */
+.card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+}
+.card-title {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 14px;
+}
+
+/* Branch bars */
+.branch-bar { margin-bottom: 10px; }
+.branch-label { display: flex; justify-content: space-between; font-size: 13px; color: var(--text2); margin-bottom: 5px; }
+.branch-label span:last-child { color: var(--text); font-weight: 500; }
+.bar-track { height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 3px; }
+
+/* Notable list */
+.person-list { display: flex; flex-direction: column; gap: 8px; }
+.person-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  background: var(--surface2);
+}
+.avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 500; flex-shrink: 0;
+}
+.person-info { flex: 1; min-width: 0; }
+.person-name { font-size: 13px; font-weight: 500; color: var(--text); }
+.person-meta { font-size: 11px; color: var(--text2); margin-top: 1px; }
+.badge {
+  font-size: 10px; padding: 3px 8px;
+  border-radius: 20px; font-weight: 500; flex-shrink: 0;
+}
+
+/* Tree */
+.tree-section { margin-bottom: var(--gap); }
+.tree-wrap { overflow-x: auto; padding-bottom: 4px; }
+.gen-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; min-width: 600px; }
+.gen-label {
+  font-size: 10px; color: var(--text3); font-weight: 500;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  min-width: 52px; padding-top: 14px; flex-shrink: 0;
+}
+.gen-nodes { display: flex; flex-wrap: wrap; gap: 6px; flex: 1; }
+
+.pnode { display: flex; flex-direction: column; align-items: center; width: 78px; cursor: pointer; }
+.pnode-card {
+  width: 74px; border-radius: var(--radius-md); padding: 7px 5px;
+  text-align: center; border: 0.5px solid var(--border);
+  background: var(--surface);
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+}
+.pnode-card:hover { background: var(--surface2); border-color: var(--border2); transform: translateY(-1px); }
+.pnode-card.selected { border: 1.5px solid #378ADD; background: #EAF1FB; }
+.pnode-initials {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 500; margin: 0 auto 4px;
+}
+.pnode-name { font-size: 9px; color: var(--text); line-height: 1.3; word-break: break-word; }
+.pnode-year { font-size: 9px; color: var(--text2); margin-top: 1px; }
+.pnode-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 4px; }
+
+/* Detail panel */
+.detail-panel {
+  background: var(--surface);
+  border: 1px solid #378ADD;
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  margin-bottom: var(--gap);
+  display: none;
+}
+.detail-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.detail-avatar { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 500; flex-shrink: 0; }
+.detail-name { font-size: 17px; font-weight: 500; color: var(--text); }
+.detail-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; }
+.field-label { font-size: 11px; color: var(--text3); margin-bottom: 2px; }
+.field-val { font-size: 13px; color: var(--text); font-weight: 500; }
+
+.close-btn {
+  margin-left: auto; background: none; border: 0.5px solid var(--border2);
+  border-radius: var(--radius-md); padding: 4px 10px; font-size: 12px;
+  color: var(--text2); cursor: pointer; font-family: var(--font);
+}
+.close-btn:hover { background: var(--surface2); }
+
+/* Legend */
+.legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 10px; }
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text2); }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <header class="db-header">
+    <div class="db-header-left">
+      <h1>Benetton Family</h1>
+      <p>Four generations · Ponzano Veneto, Italy · est. 1965</p>
+    </div>
+    <span class="header-badge">Family archive</span>
+  </header>
+
+  <div class="metrics" id="metrics"></div>
+
+  <div id="detail-panel" class="detail-panel"></div>
+
+  <div class="card tree-section">
+    <div class="card-title">Family tree — click any member to view details</div>
+    <div class="tree-wrap" id="tree"></div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#639922;"></div>Living</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#B4B2A9;"></div>Deceased</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#888780;opacity:0.5;"></div>Spouse (married in)</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Members by branch</div>
+      <div id="branch-bars"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Notable members</div>
+      <div class="person-list" id="notable-list"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const people = [
+  {id:'P000001',first:'Leone',sur:'Benetton',fid:null,mid2:null,dob:null,dod:null,sp:['P000002'],branch:'Founders',alive:false},
+  {id:'P000002',first:'Rosa',sur:'Zanin',fid:null,mid2:null,dob:null,dod:null,sp:['P000001'],branch:'Founders',alive:false},
+  {id:'P000003',first:'Luciano',sur:'Benetton',fid:'P000001',mid2:'P000002',dob:'1935-05-13',dod:null,sp:['P000020','P000021'],branch:'Founder',alive:true},
+  {id:'P000004',first:'Giuliana',sur:'Benetton',fid:'P000001',mid2:'P000002',dob:'1937-07-08',dod:null,sp:['P000022'],branch:'Founder',alive:true},
+  {id:'P000005',first:'Gilberto',sur:'Benetton',fid:'P000001',mid2:'P000002',dob:'1941-06-19',dod:'2018-10-22',sp:['P000023'],branch:'Founder',alive:false},
+  {id:'P000006',first:'Carlo',sur:'Benetton',fid:'P000001',mid2:'P000002',dob:'1943-12-26',dod:'2018-07-10',sp:[],branch:'Founder',alive:false},
+  {id:'P000007',first:'Mauro',sur:'Benetton',fid:'P000003',mid2:'P000020',dob:null,dod:null,sp:[],branch:'Luciano',alive:true},
+  {id:'P000008',first:'Alessandro',sur:'Benetton',fid:'P000003',mid2:'P000020',dob:'1964-03-02',dod:null,sp:['P000024'],branch:'Luciano',alive:true},
+  {id:'P000009',first:'Rossella',sur:'Benetton',fid:'P000003',mid2:'P000020',dob:null,dod:null,sp:[],branch:'Luciano',alive:true},
+  {id:'P000010',first:'Rocco',sur:'Benetton',fid:'P000003',mid2:'P000020',dob:'1969-09-12',dod:null,sp:[],branch:'Luciano',alive:true},
+  {id:'P000011',first:'Brando',sur:'Benetton',fid:'P000003',mid2:'P000021',dob:null,dod:null,sp:[],branch:'Luciano',alive:true},
+  {id:'P000012',first:'Paola',sur:'Bertagnin Benetton',fid:'P000022',mid2:'P000004',dob:null,dod:null,sp:[],branch:'Giuliana',alive:true},
+  {id:'P000013',first:'Franca',sur:'Bertagnin Benetton',fid:'P000022',mid2:'P000004',dob:null,dod:null,sp:[],branch:'Giuliana',alive:true},
+  {id:'P000014',first:'Daniela',sur:'Bertagnin Benetton',fid:'P000022',mid2:'P000004',dob:null,dod:null,sp:[],branch:'Giuliana',alive:true},
+  {id:'P000015',first:'Carlo',sur:'Bertagnin Benetton',fid:'P000022',mid2:'P000004',dob:null,dod:null,sp:[],branch:'Giuliana',alive:true},
+  {id:'P000016',first:'Sabrina',sur:'Benetton',fid:'P000005',mid2:'P000023',dob:null,dod:null,sp:['P000025'],branch:'Gilberto',alive:true},
+  {id:'P000017',first:'Barbara',sur:'Benetton',fid:'P000005',mid2:'P000023',dob:null,dod:null,sp:[],branch:'Gilberto',alive:true},
+  {id:'P000018',first:'Christian',sur:'Benetton',fid:'P000006',mid2:null,dob:null,dod:null,sp:[],branch:'Carlo',alive:true},
+  {id:'P000019',first:'Massimo',sur:'Benetton',fid:'P000006',mid2:null,dob:null,dod:null,sp:[],branch:'Carlo',alive:true},
+  {id:'P000026',first:'Andrea',sur:'Benetton',fid:'P000006',mid2:null,dob:null,dod:null,sp:[],branch:'Carlo',alive:true},
+  {id:'P000027',first:'Leone',sur:'Benetton',fid:'P000006',mid2:null,dob:null,dod:null,sp:[],branch:'Carlo',alive:true},
+  {id:'P000020',first:'Maria Teresa',sur:'Maestri',fid:null,mid2:null,dob:null,dod:null,sp:['P000003'],branch:'Spouse',alive:true},
+  {id:'P000021',first:'Marina',sur:'Salomon',fid:null,mid2:null,dob:null,dod:null,sp:['P000003'],branch:'Spouse',alive:true},
+  {id:'P000022',first:'Fioravante',sur:'Bertagnin',fid:null,mid2:null,dob:null,dod:null,sp:['P000004'],branch:'Spouse',alive:false},
+  {id:'P000023',first:'Laura',sur:'Pasquotti',fid:null,mid2:null,dob:null,dod:null,sp:['P000005'],branch:'Spouse',alive:true},
+  {id:'P000024',first:'Deborah',sur:'Compagnoni',fid:null,mid2:null,dob:null,dod:null,sp:['P000008'],branch:'Spouse',alive:true},
+  {id:'P000025',first:'Ermanno',sur:'Boffa',fid:null,mid2:null,dob:null,dod:null,sp:['P000016'],branch:'Spouse',alive:true},
+];
+
+const byId = {};
+people.forEach(p => byId[p.id] = p);
+
+const branchColors = {
+  'Founders': {bg:'#E6F1FB',text:'#0C447C',dot:'#378ADD'},
+  'Founder':  {bg:'#EAF3DE',text:'#27500A',dot:'#639922'},
+  'Luciano':  {bg:'#EEEDFE',text:'#3C3489',dot:'#7F77DD'},
+  'Giuliana': {bg:'#FBEAF0',text:'#72243E',dot:'#D4537E'},
+  'Gilberto': {bg:'#FAEEDA',text:'#633806',dot:'#BA7517'},
+  'Carlo':    {bg:'#FAECE7',text:'#712B13',dot:'#D85A30'},
+  'Spouse':   {bg:'#F1EFE8',text:'#444441',dot:'#888780'},
+};
+
+function initials(p) {
+  return (p.first[0] + (p.sur ? p.sur.trim().slice(-1*p.sur.trim().split(' ').pop().length)[0] : '')).toUpperCase();
+}
+
+function fmtDate(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'});
+}
+
+function calcAge(p) {
+  if (!p.dob) return null;
+  const end = p.dod ? new Date(p.dod) : new Date();
+  return Math.floor((end - new Date(p.dob)) / (365.25*24*3600*1000));
+}
+
+// Metrics
+const total = people.length;
+const aliveCount = people.filter(p=>p.alive).length;
+const gen3 = people.filter(p=>!['Founders','Founder','Spouse'].includes(p.branch));
+document.getElementById('metrics').innerHTML = [
+  {label:'Total members',  value: total,       sub: 'across all branches'},
+  {label:'Living members', value: aliveCount,  sub: `${total - aliveCount} deceased`},
+  {label:'Generation 3',   value: gen3.length, sub: 'grandchildren of Leone'},
+  {label:'Family branches',value: 4,           sub: 'Luciano · Giuliana · Gilberto · Carlo'},
+].map(m=>`<div class="metric"><div class="m-label">${m.label}</div><div class="m-value">${m.value}</div><div class="m-sub">${m.sub}</div></div>`).join('');
+
+// Branch bars
+const branches = ['Luciano','Giuliana','Gilberto','Carlo'];
+const counts = {};
+branches.forEach(b => counts[b] = people.filter(p=>p.branch===b).length);
+const maxC = Math.max(...Object.values(counts));
+document.getElementById('branch-bars').innerHTML = branches.map(b => {
+  const col = branchColors[b];
+  return `<div class="branch-bar">
+    <div class="branch-label"><span>${b}</span><span>${counts[b]} members</span></div>
+    <div class="bar-track"><div class="bar-fill" style="width:${(counts[b]/maxC*100).toFixed(0)}%;background:${col.dot};"></div></div>
+  </div>`;
+}).join('');
+
+// Notable members
+const notable = [
+  {id:'P000003',note:'Co-founder, chairman'},
+  {id:'P000004',note:'Fashion designer, co-founder'},
+  {id:'P000008',note:'CEO, investor'},
+  {id:'P000024',note:'Olympic ski champion'},
+];
+document.getElementById('notable-list').innerHTML = notable.map(n => {
+  const p = byId[n.id];
+  const col = branchColors[p.branch] || branchColors['Spouse'];
+  return `<div class="person-row">
+    <div class="avatar" style="background:${col.bg};color:${col.text};">${initials(p)}</div>
+    <div class="person-info">
+      <div class="person-name">${p.first} ${p.sur}</div>
+      <div class="person-meta">${n.note}</div>
+    </div>
+    <div class="badge" style="background:${col.bg};color:${col.text};">${p.branch}</div>
+  </div>`;
+}).join('');
+
+// Tree
+const generations = [
+  {label:'Gen 1',         ids:['P000001','P000002']},
+  {label:'Gen 2',         ids:['P000003','P000020','P000021','P000004','P000022','P000005','P000023','P000006']},
+  {label:'Gen 3',         ids:['P000007','P000008','P000009','P000010','P000011','P000012','P000013','P000014','P000015','P000016','P000017','P000018','P000019','P000026','P000027']},
+  {label:'Spouses (G3)', ids:['P000024','P000025']},
+];
+
+let selectedId = null;
+
+function renderTree() {
+  const treeEl = document.getElementById('tree');
+  treeEl.innerHTML = '';
+  generations.forEach(gen => {
+    const row = document.createElement('div');
+    row.className = 'gen-row';
+    row.innerHTML = `<div class="gen-label">${gen.label}</div>`;
+    const nodes = document.createElement('div');
+    nodes.className = 'gen-nodes';
+    gen.ids.forEach(id => {
+      const p = byId[id];
+      const col = branchColors[p.branch] || branchColors['Spouse'];
+      const isSpouse = p.branch === 'Spouse';
+      const yr = p.dob ? new Date(p.dob).getFullYear() : '';
+      const sel = selectedId === id ? ' selected' : '';
+      const node = document.createElement('div');
+      node.className = 'pnode';
+      node.innerHTML = `<div class="pnode-card${sel}" style="${isSpouse?'opacity:0.72;':''}">
+          <div class="pnode-initials" style="background:${col.bg};color:${col.text};">${initials(p)}</div>
+          <div class="pnode-name">${p.first}<br>${p.sur.split(' ').pop()}</div>
+          ${yr ? `<div class="pnode-year">${yr}</div>` : ''}
+        </div>
+        <div class="pnode-dot" style="background:${p.alive ? col.dot : '#B4B2A9'};"></div>`;
+      node.querySelector('.pnode-card').addEventListener('click', () => selectPerson(id));
+      nodes.appendChild(node);
+    });
+    row.appendChild(nodes);
+    treeEl.appendChild(row);
+  });
+}
+
+function selectPerson(id) {
+  selectedId = (id === selectedId) ? null : id;
+  renderTree();
+  const panel = document.getElementById('detail-panel');
+  if (!selectedId) { panel.style.display = 'none'; return; }
+  const p = byId[selectedId];
+  const col = branchColors[p.branch] || branchColors['Spouse'];
+  const a = calcAge(p);
+  const fatherP = p.fid ? byId[p.fid] : null;
+  const motherP = p.mid2 ? byId[p.mid2] : null;
+  const spouseNames = (p.sp||[]).map(sid => { const s = byId[sid]; return s ? `${s.first} ${s.sur}` : sid; }).join(', ');
+  panel.style.display = 'block';
+  panel.innerHTML = `
+    <div class="detail-header">
+      <div class="detail-avatar" style="background:${col.bg};color:${col.text};">${initials(p)}</div>
+      <div>
+        <div class="detail-name">${p.first} ${p.sur}</div>
+        <div class="detail-sub">${p.branch} branch · ${p.alive ? 'Living' : 'Deceased'} · ${p.id}</div>
+      </div>
+      <button class="close-btn" onclick="selectPerson('${selectedId}')">Close ✕</button>
+    </div>
+    <div class="detail-grid">
+      <div><div class="field-label">Born</div><div class="field-val">${fmtDate(p.dob)}</div></div>
+      <div><div class="field-label">${p.dod ? 'Died' : 'Age'}</div><div class="field-val">${p.dod ? fmtDate(p.dod) : (a ? `${a} years old` : '—')}</div></div>
+      <div><div class="field-label">Father</div><div class="field-val">${fatherP ? fatherP.first+' '+fatherP.sur : '—'}</div></div>
+      <div><div class="field-label">Mother</div><div class="field-val">${motherP ? motherP.first+' '+motherP.sur : '—'}</div></div>
+      <div style="grid-column:span 2;"><div class="field-label">Spouse(s)</div><div class="field-val">${spouseNames || '—'}</div></div>
+    </div>`;
+  panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+renderTree();
+</script>
+</body>
+</html>
